@@ -33,4 +33,4 @@ path(
 Go the url ```localhost:8000/admin/console``` to start entering queries.
 
 ## Screenshot
-![Example Query]('screenshot/query.png)
+![Example Query](screenshot/query.png)
