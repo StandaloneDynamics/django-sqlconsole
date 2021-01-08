@@ -2,6 +2,8 @@
 
 Sqlconsole is a django app that allows for the execution of sql queries from the admin section of a django site.
 
+Sqlconsole only works with the current LTS version of django (2.2).
+
 ## Install
 
 ```
