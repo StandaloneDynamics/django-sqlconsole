@@ -1,5 +1,11 @@
 from django import forms
+from .models import QueryLog
 
 
-class ConsoleForm(forms.Form):
-    query = forms.CharField(widget=forms.Textarea(attrs={"cols": "160", "rows": "10"}))
+class ConsoleForm(forms.ModelForm):
+    query = forms.CharField(widget=forms.Textarea(attrs={"cols": "150", "rows": "10"}))
+
+    class Meta:
+        model = QueryLog
+        fields = ('query', )
+
