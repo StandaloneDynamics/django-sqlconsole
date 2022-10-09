@@ -22,7 +22,7 @@
                 {% if docsroot %}
                     <a href="{{ docsroot }}">{% trans 'Documentation' %}</a> /
                 {% endif %}
-		<a href="{% url 'sqlconsole:console' %}">{% trans 'Console' %}</a>
+		<a href="{% url 'console' %}">{% trans 'Console' %}</a>
             {% endif %}
             {% if user.has_usable_password %}
                 <a href="{% url 'admin:password_change' %}">{% trans 'Change password' %}</a> /
