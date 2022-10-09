@@ -34,5 +34,11 @@ INSTALLED_APPS = [
 
 SqlConsole will be included in the admin section with a history of executed queries.
 
+Permissions will be required to execute queries
+`sqlconsole.can_execute_query`
+
+
+
+
 ## Screenshot
 ![Example Query](screenshot/query.png)
