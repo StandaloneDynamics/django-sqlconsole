@@ -1,38 +1,49 @@
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.shortcuts import render
 from .forms import ConsoleForm
 from django.db import connection, utils
-from django.contrib.admin.views.decorators import staff_member_required
-from django.db import transaction
+
+from django.views import View
+from .models import State
 
 
-@transaction.non_atomic_requests
-@staff_member_required
-def console(request):
-    if request.method == "POST":
-        form = ConsoleForm(request.POST)
+class ConsoleView(PermissionRequiredMixin, View):
+    template_name = 'admin/sqlconsole.djhtml'
+    form_class = ConsoleForm
+    permission_required = 'sqlconsole.can_execute_query'
+
+    def get(self, request, *args, **kwargs):
+        form = self.form_class()
+        return render(request, self.template_name, {'form': form})
+
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST)
         if form.is_valid():
-            query = form.cleaned_data["query"]
+            query = form.save(commit=False)
+            console_query = form.cleaned_data.get('query')
+            message = ''
             columns = []
             results = []
-            message = ""
             try:
                 with connection.cursor() as cursor:
-                    cursor.execute(query)
+                    cursor.execute(console_query)
                     if cursor.description:
                         columns = [col[0] for col in cursor.description]
                         results = cursor.fetchall()
                     else:
                         message = "Success"
-            except (
-                utils.InternalError,
-                utils.ProgrammingError,
-                utils.OperationalError,
-            ) as error:
+                    query.state = State.SUCCESS
+                    query.save()
+            except (utils.InternalError,
+                    utils.ProgrammingError,
+                    utils.OperationalError) as error:
                 message = error
+                query.state = State.ERROR
+                query.save()
             finally:
                 return render(
                     request,
-                    "admin/sqlconsole.djhtml",
+                    self.template_name,
                     {
                         "form": form,
                         "results": results,
@@ -40,7 +51,3 @@ def console(request):
                         "message": message,
                     },
                 )
-
-    else:
-        form = ConsoleForm()
-    return render(request, "admin/sqlconsole.djhtml", {"form": form})
