@@ -8,7 +8,7 @@ from .models import QueryLog
 
 @admin.register(QueryLog)
 class QueryLogAdmin(admin.ModelAdmin):
-    list_display = ('query', 'state', 'created')
+    list_display = ('query', 'state', 'created', 'created_by')
 
     def get_urls(self):
         urls = super().get_urls()
