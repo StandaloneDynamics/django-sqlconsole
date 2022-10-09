@@ -33,12 +33,14 @@ class ConsoleView(PermissionRequiredMixin, View):
                     else:
                         message = "Success"
                     query.state = State.SUCCESS
+                    query.created_by = request.user
                     query.save()
             except (utils.InternalError,
                     utils.ProgrammingError,
                     utils.OperationalError) as error:
                 message = error
                 query.state = State.ERROR
+                query.created_by = request.user
                 query.save()
             finally:
                 return render(
@@ -51,3 +53,6 @@ class ConsoleView(PermissionRequiredMixin, View):
                         "message": message,
                     },
                 )
+        else:
+            errors = form.errors['query']
+            return render(request, self.template_name, {'form': form, "message": errors})
