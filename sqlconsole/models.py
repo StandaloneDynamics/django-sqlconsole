@@ -1,17 +1,16 @@
 from django.db import models
 from django.conf import settings
-from enum import IntEnum
 
 
-class State(IntEnum):
+class State(models.IntegerChoices):
     SUCCESS = 1
     ERROR = 2
 
 
 class QueryLog(models.Model):
     query = models.TextField()
-    created = models.DateTimeField(auto_now=True)
-    state = models.SmallIntegerField()
+    created_at = models.DateTimeField(auto_now=True)
+    state = models.SmallIntegerField(choices=State.choices)
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
 
     class Meta:
