@@ -10,12 +10,7 @@ SELECT * FROM <some_table>
 SELECT count(*) FROM <some_table>
 ```
 
-For queries that modify data eg:
-```
-DELETE FROM <some_table> WHERE ID=<some_id>
-```
-
-only a success or error message will be shown
+SQL queries that modify (INSERT, UPDATE etc) data are not supported.
 
 ## Install
 

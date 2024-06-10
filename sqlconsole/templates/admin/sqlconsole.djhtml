@@ -54,6 +54,14 @@
 	    </div>
 	</form>
 	{% if results %}
+        <div class="download-row">
+            <button class="download-button">
+                <a href={% url 'admin:download-console-csv' query_id %}>Download CSV</a>
+            </button>
+	    </div>
+	{% endif %}
+
+	{% if results %}
 	    <div class="results">
 		<table id="result_list">
 		    <thead>

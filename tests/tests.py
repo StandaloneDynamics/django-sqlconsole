@@ -3,13 +3,13 @@ from django.contrib.auth.models import User, Permission
 from django.contrib.contenttypes.models import ContentType
 from django.urls import reverse
 
-from .models import QueryLog
+from sqlconsole.models import QueryLog, State
 
 
 class ConsoleTestCase(TestCase):
     def setUp(self) -> None:
         self.admin = User.objects.create(username='admin', password='admin',
-                                    is_staff=True, is_superuser=True)
+                                         is_staff=True, is_superuser=True)
         self.staff = User.objects.create(username='staff', password='staff', is_staff=True)
 
         ct = ContentType.objects.get_for_model(QueryLog)
@@ -70,18 +70,13 @@ class ConsoleTestCase(TestCase):
         self.assertEqual(resp.context['results'][0], (0,))
         self.assertEqual(QueryLog.objects.count(), 1)
 
+    def test_download_csv(self):
+        query = 'select * from auth_user'
+        log = QueryLog.objects.create(query=query, state=State.SUCCESS, created_by=self.admin)
+        download_url = reverse('admin:download-console-csv', kwargs={'query_id': log.id})
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        client = Client()
+        client.force_login(self.admin)
+        resp = client.get(download_url)
+        self.assertEqual(resp.status_code, 200)
+        self.assertIn('text/csv', resp.headers['Content-Type'])
