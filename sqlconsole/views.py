@@ -35,9 +35,7 @@ class ConsoleView(PermissionRequiredMixin, View):
                     query.state = State.SUCCESS
                     query.created_by = request.user
                     query.save()
-            except (utils.InternalError,
-                    utils.ProgrammingError,
-                    utils.OperationalError) as error:
+            except (utils.InternalError, utils.ProgrammingError, utils.OperationalError) as error:
                 message = error
                 query.state = State.ERROR
                 query.created_by = request.user
@@ -51,6 +49,7 @@ class ConsoleView(PermissionRequiredMixin, View):
                         "results": results,
                         "columns": columns,
                         "message": message,
+                        "query_id": query.id if results else ""
                     },
                 )
         else:
